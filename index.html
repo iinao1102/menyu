@@ -320,6 +320,11 @@
             position: relative;
             transform: translateY(20px); /* 最初は少し下に配置 */
             transition: transform 0.3s ease-in-out;
+            
+            /* ここにスクロール機能を追加 */
+            max-height: 80vh; /* ビューポートの高さの80%を最大高さとする */
+            overflow-y: auto; /* 縦方向にスクロールを可能にする */
+            -webkit-overflow-scrolling: touch; /* iOSでのスムーズなスクロール */
         }
 
         .detail-modal-overlay.visible .detail-modal-content {
@@ -490,6 +495,7 @@
 
             .detail-modal-content {
                 padding: 25px; /* モーダルのパディングを調整 */
+                max-height: 85vh; /* タブレット向けに少し高く */
             }
 
             .detail-modal-image {
@@ -585,6 +591,7 @@
 
             .detail-modal-content {
                 padding: 20px;
+                max-height: 90vh; /* スマートフォン向けにさらに高く */
             }
 
             .detail-modal-image {
