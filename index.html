@@ -298,7 +298,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 1000; /* モーダルを最前面に表示 */
             visibility: hidden;
             opacity: 0;
             transition: visibility 0s, opacity 0.3s ease-in-out; /* アニメーション */
@@ -389,10 +389,15 @@
             color: #888; /* 落ち着いた色 */
             cursor: pointer;
             transition: color 0.2s ease;
+            padding: 5px 10px; /* タッチしやすいようにパディングを追加 */
+            border-radius: 50%; /* 丸い形に */
+            background-color: rgba(255, 255, 255, 0.7); /* 半透明の背景で視認性向上 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 影を追加 */
         }
 
         .detail-modal-close-button:hover {
             color: #333; /* ホバー時の色 */
+            background-color: rgba(255, 255, 255, 0.9); /* ホバー時に背景を濃くする */
         }
 
         /* おすすめペアリングのスタイル */
@@ -508,6 +513,7 @@
                 font-size: 1.8em;
                 top: 10px;
                 right: 15px;
+                padding: 3px 8px; /* タッチしやすいようにパディングを調整 */
             }
 
             .recommended-pairing {
@@ -623,6 +629,7 @@
                     <path d="M10 9c1.105 0 2 .895 2 2s-.895 2-2 2-2-.895-2-2 .895-2 2-2z" fill="#C62828"/>
                     <path d="M19 14c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#4CAF50"/>
                     <path d="M18 15c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#4CAF50"/>
+                    <path d="M16 18c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#4CAF50"/>
                 </svg>
                 パスタ
             </button>
@@ -712,7 +719,7 @@
     <!-- 料理詳細表示用モーダル -->
     <div id="dishDetailModal" class="detail-modal-overlay">
         <div class="detail-modal-content">
-            <button class="detail-modal-close-button" onclick="closeDishDetailModal()">&times;</button>
+            <button class="detail-modal-close-button" onclick="closeDishDetailModal()" aria-label="閉じる">&times;</button>
             <div class="detail-modal-image">
                 <img id="detailDishImage" src="" alt="料理の画像">
             </div>
