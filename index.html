@@ -557,6 +557,9 @@
     </div>
 
     <script>
+        // スクリプトが読み込まれたことを示す最初のログ
+        console.log("JavaScriptの実行が開始されました。");
+
         // メニューデータ
         const menuData = {
             'hors-doeuvres': [
@@ -645,7 +648,7 @@
                 },
                 {
                     name: "ジゾラ '21",
-                    description: "ZISOLA '21　(I.G.T) Mazzei 【SICILIA】/ ロ・ダヴォラ100% 奥行きのある高い凝縮感を持ったエレガントな味わいです。",
+                    description: "ZISOLA '21　(I.G.T) Mazzei 【SICILIA】/ ロ・ダヴォーラ100% 奥行きのある高い凝縮感を持ったエレガントな味わいです。",
                     prices: [{ type: "", value: "¥7,600 (9,196)" }],
                     imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine" },
                 {
@@ -1191,7 +1194,7 @@
 
         // メニューを表示する関数
         function displayMenu(category) {
-            console.log(`Attempting to display menu for category: ${category}`);
+            console.log(`メニューカテゴリの表示を試行中: ${category}`);
 
             // 現在表示されているメニューを非表示にする
             const currentMenu = menuContentDiv.querySelector('.menu-section.active');
@@ -1280,11 +1283,11 @@
                     });
                 });
             }
-            console.log(`Menu for category ${category} data processed.`);
+            console.log(`カテゴリ ${category} のメニューデータが処理されました。`);
 
             // 新しいメニューセクションを表示
             targetSection.classList.add('active');
-            console.log(`Menu for category ${category} displayed successfully.`);
+            console.log(`カテゴリ ${category} のメニューが正常に表示されました。`);
         }
 
         // カテゴリ名から表示用のタイトルを取得するヘルパー関数
@@ -1303,7 +1306,7 @@
 
         // 料理詳細モーダルを開く関数
         function openDishDetailModal(item) {
-            console.log('Opening dish detail modal for:', item.name);
+            console.log('料理詳細モーダルを開いています:', item.name);
             detailDishImage.src = item.imageUrl;
             detailDishImage.alt = item.name + 'の画像';
             detailDishName.textContent = item.name;
@@ -1336,19 +1339,19 @@
             }
 
             dishDetailModal.classList.add('visible');
-            console.log('Dish detail modal opened.');
+            console.log('料理詳細モーダルが開かれました。');
         }
 
         // 料理詳細モーダルを閉じる関数
         function closeDishDetailModal() {
-            console.log('Closing dish detail modal.');
+            console.log('料理詳細モーダルを閉じています。');
             dishDetailModal.classList.remove('visible');
         }
 
         // ボタンクリックイベントリスナーを設定
         categoryButtons.forEach(button => {
             button.addEventListener('click', () => {
-                console.log('Category button clicked:', button.dataset.category);
+                console.log('カテゴリボタンがクリックされました:', button.dataset.category);
                 // 全てのボタンからactiveクラスを削除
                 categoryButtons.forEach(btn => btn.classList.remove('active'));
                 // クリックされたボタンにactiveクラスを追加
@@ -1361,13 +1364,13 @@
 
         // ページ読み込み時に最初のカテゴリを表示
         window.onload = () => {
-            console.log('Window loaded. Initializing menu display.');
+            console.log('ウィンドウがロードされました。メニュー表示を初期化しています。');
             const loadingMessage = document.getElementById('loadingMessage');
             if (loadingMessage) {
                 loadingMessage.style.display = 'none'; // Hide loading message once JS starts
             }
             displayMenu('hors-doeuvres'); // 初期表示をオードブルに変更
-            console.log('Initial menu category "hors-doeuvres" displayed.');
+            console.log('最初のメニューカテゴリ「オードブル」が表示されました。');
         };
     </script>
 </body>
