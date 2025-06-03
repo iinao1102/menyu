@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>グラナータ アラカルト メニュー</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Georgia&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        /* 基本スタイル */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #FDFBF8; /* 暖かみのあるオフホワイトの背景色 */
+            color: #333; /* 標準的なダークグレーのテキスト色 */
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-osx-font-smoothing: grayscale;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* 上部に寄せる */
+            min-height: 100vh; /* 画面いっぱいに広げる */
+            box-sizing: border-box;
+        }
+
+        /* コンテナ */
+        .container {
+            max-width: 650px; /* コンテナの最大幅 */
+            width: 100%; /* レスポンシブ対応 */
+            margin: 20px auto; /* マージン */
+            background-color: #fff; /* 白い背景色 */
+            border-radius: 12px; /* 角丸 */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* 影 */
+            padding: 30px; /* パディング */
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        /* ヘッダー */
+        h1 {
+            font-family: 'Cormorant Garamond', serif; /* エレガントなフォント */
+            font-style: italic; /* イタリック体 */
+            color: #6A0D0D; /* 深いマルーン色 */
+            font-size: 4.8em; /* 大きさ */
+            margin-bottom: 5px;
+            letter-spacing: 1px; /* 文字間隔 */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15); /* ソフトな影 */
+            line-height: 1; /* 行の高さ */
+            font-weight: 600; /* フォントの太さ */
+        }
+
+        h1 .la-text {
+            font-size: 0.4em; /* "LA"を小さく */
+            font-style: italic; /* イタリック体 */
+            vertical-align: super; /* 上付き文字のように配置 */
+            margin-right: 5px; /* "LA"と"GRANATA"の間に少しスペース */
+            color: #6A0D0D; /* LAの特定の色を削除し、親要素の色を継承 */
+            font-weight: 400; /* "LA"の太さ */
+        }
+
+        h2.menu-title {
+            color: #666; /* 落ち着いたミディアムグレー */
+            font-size: 1.8em; /* 大きさ */
+            margin-top: 0;
+            margin-bottom: 30px; /* マージン */
+            font-weight: 600;
+            border-bottom: 2px solid #eee; /* 細く、落ち着いたボーダー */
+            padding-bottom: 10px; /* パディング */
+            letter-spacing: normal; /* 文字間隔 */
+        }
+
+        /* カテゴリボタン */
+        .category-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* ボタン間のスペース */
+            margin-bottom: 40px; /* マージン */
+            flex-wrap: wrap;
+        }
+
+        .category-button {
+            background-color: #FBF8F6; /* 暖かみのあるベージュ */
+            color: #666; /* 落ち着いたグレー */
+            border: none;
+            padding: 12px 20px; /* パディング */
+            border-radius: 30px; /* より丸く */
+            cursor: pointer;
+            font-size: 1.05em; /* 大きさ */
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* ソフトな影 */
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px; /* アイコンとテキストの間のスペース */
+
+            min-width: 120px; /* ボタンの最小幅 */
+            height: 90px; /* ボタンの高さ */
+        }
+
+        .category-button:hover {
+            background-color: #EFEBE9; /* ホバー時の色 */
+            transform: translateY(-2px); /* 浮き上がる量 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 影 */
+        }
+
+        .category-button.active {
+            background-color: #8B0000; /* アクティブ時の深い赤色 */
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* SVGアイコン */
+        .category-button svg {
+            width: 32px; /* アイコンのサイズ */
+            height: 32px; /* アイコンのサイズ */
+            fill: #666; /* デフォルトの色をボタンのテキスト色に合わせる */
+            transition: fill 0.3s ease;
+        }
+
+        .category-button.active svg {
+            fill: white;
+        }
+        
+        /* メニューセクション */
+        .menu-section {
+            display: none;
+            text-align: left;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .menu-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); } /* アニメーションの開始位置 */
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-section h3 { /* カテゴリ内のタイトル */
+            color: #6A0D0D; /* 深いマルーン色 */
+            font-size: 2em; /* 大きさ */
+            margin-top: 0;
+            margin-bottom: 25px; /* マージン */
+            text-align: center;
+            letter-spacing: normal; /* 文字間隔 */
+        }
+
+        /* メニュー項目 */
+        .menu-item {
+            margin-bottom: 25px; /* マージン */
+            padding-bottom: 20px; /* パディング */
+            border-bottom: 1px dashed #eee; /* 落ち着いたボーダー */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px; /* 角丸 */
+            background-color: #fff; /* 白い背景色 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* デフォルトの影 */
+            padding-top: 0; /* 上部パディングを削除 */
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px); /* 浮き上がる量 */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 影 */
+            background-color: #F8F5F2; /* ホバー時に背景を少し明るくする */
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .menu-item-image {
+            width: 100%;
+            max-width: 250px; /* 最大幅 */
+            height: 150px; /* 高さ */
+            margin-bottom: 15px; /* マージン */
+            border-radius: 8px; /* 角丸 */
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 画像に影 */
+        }
+
+        .menu-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .menu-item-content {
+            width: 100%;
+            text-align: left;
+            padding: 0 15px; /* 左右にパディング */
+            box-sizing: border-box;
+        }
+
+        /* 料理名と価格のコンテナ */
+        .menu-item h4 {
+            display: flex;
+            flex-direction: column; /* 要素を縦に並べる */
+            align-items: flex-start; /* 左寄せ */
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.3em;
+            font-weight: 600;
+            line-height: 1.3;
+            width: 100%; /* 親要素の幅いっぱいに広げる */
+        }
+
+        /* 料理名 */
+        .menu-item h4 .dish-name {
+            width: 100%; /* 利用可能な幅いっぱいに広げる */
+            text-align: left;
+            margin-bottom: 5px; /* 料理名と価格の間のスペース */
+            word-break: break-word; /* 長い名前がはみ出さないように改行を許可 */
+        }
+
+        /* 価格 */
+        .menu-item h4 span.price {
+            color: #6A0D0D; /* 深いマルーン色 */
+            font-size: 1.1em; /* 大きさ */
+            font-weight: bold;
+            width: 100%; /* 利用可能な幅いっぱいに広げる */
+            text-align: right; /* 価格を右寄せ */
+            flex-shrink: 0; /* 縮小しない */
+            word-break: break-all; /* 長い価格文字列がはみ出さないように改行を許可 */
+        }
+
+        .menu-item p { /* 説明文 */
+            font-size: 0.95em; /* 大きさ */
+            color: #777; /* 落ち着いたグレー */
+            text-align: justify;
+            margin-bottom: 0; /* マージン */
+        }
+        
+        /* タップできることを示すテキスト */
+        .tap-indicator {
+            position: absolute;
+            bottom: 5px; /* 下からの位置 */
+            right: 10px; /* 右からの位置 */
+            font-size: 0.75em; /* 大きさ */
+            color: #777; /* 落ち着いた色 */
+            opacity: 1; /* 常に表示 */
+            display: flex;
+            align-items: center;
+            gap: 3px; /* 矢印とテキストの間のスペース */
+            transition: color 0.2s ease-out;
+            font-weight: 400; /* フォントの太さ */
+        }
+
+        .menu-item:hover .tap-indicator {
+            color: #6A0D0D; /* ホバー時に店名の色に合わせる */
+        }
+
+        .tap-indicator svg {
+            width: 12px; /* 矢印のサイズ */
+            height: 12px; /* 矢印のサイズ */
+            fill: #777; /* デフォルトの色 */
+            transition: fill 0.2s ease-out;
+        }
+
+        .menu-item:hover .tap-indicator svg {
+            fill: #6A0D0D; /* ホバー時に店名の色に合わせる */
+        }
+
+
+        /* フッター */
+        .footer {
+            margin-top: 50px; /* マージン */
+            font-size: 0.85em; /* 大きさ */
+            color: #888;
+            border-top: 1px solid #eee; /* 落ち着いたボーダー */
+            padding-top: 20px; /* パディング */
+        }
+
+        /* 料理詳細モーダル */
+        .detail-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* 暗い背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease-in-out; /* アニメーション */
+        }
+
+        .detail-modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .detail-modal-content {
+            background-color: #fff; /* モーダルの背景色も白に */
+            padding: 40px; /* パディング */
+            border-radius: 12px; /* 角丸 */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* 影 */
+            text-align: center;
+            max-width: 600px; /* モーダルの最大幅 */
+            width: 90%;
+            position: relative;
+            transform: translateY(20px); /* 最初は少し下に配置 */
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .detail-modal-overlay.visible .detail-modal-content {
+            transform: translateY(0); /* 表示時に元の位置へ */
+        }
+
+        .detail-modal-image {
+            width: 100%;
+            height: 250px; /* モーダル内の画像高さ */
+            margin-bottom: 25px; /* マージン */
+            border-radius: 8px; /* 角丸 */
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 画像に影 */
+        }
+
+        .detail-modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .detail-modal-content h3 {
+            color: #6A0D0D; /* 深いマルーン色 */
+            margin-top: 0;
+            margin-bottom: 12px; /* マージン */
+            font-size: 2.2em; /* 大きさ */
+            letter-spacing: normal; /* 文字間隔 */
+        }
+
+        .detail-modal-content .detail-price {
+            color: #8B0000; /* 価格の色 */
+            font-size: 1.5em; /* 大きさ */
+            font-weight: bold;
+            margin-bottom: 20px; /* マージン */
+        }
+
+        .detail-modal-content p {
+            color: #555; /* 標準的なグレー */
+            font-size: 1.1em; /* 大きさ */
+            line-height: 1.8;
+            text-align: justify;
+            margin-bottom: 30px; /* マージン */
+        }
+        
+        .detail-modal-content ul {
+            list-style-type: none; /* リストのマーカーを削除 */
+            padding-left: 0; /* 左パディングを削除 */
+            text-align: left; /* 左寄せ */
+            margin-bottom: 20px;
+        }
+
+        .detail-modal-content ul li {
+            margin-bottom: 8px; /* リストアイテム間のスペース */
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .detail-modal-close-button {
+            position: absolute;
+            top: 15px; /* 位置 */
+            right: 20px; /* 位置 */
+            background: none;
+            border: none;
+            font-size: 2.2em; /* 大きさ */
+            color: #888; /* 落ち着いた色 */
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .detail-modal-close-button:hover {
+            color: #333; /* ホバー時の色 */
+        }
+
+        /* おすすめペアリングのスタイル */
+        .recommended-pairing {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #eee;
+            text-align: left; /* 左寄せ */
+            color: #333;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .recommended-pairing strong {
+            color: #6A0D0D; /* 深いマルーン色 */
+            font-size: 1.1em;
+            display: block; /* 新しい行に表示 */
+            margin-bottom: 8px;
+        }
+
+        .recommended-pairing .pairing-reason {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 480px) {
+            .recommended-pairing {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="la-text">LA</span> GRANATA</h1>
+        <h2 class="menu-title">メニュー</h2>
+
+        <div class="category-buttons">
+            <button class="category-button active" data-category="hors-doeuvres">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="12" r="10" fill="#E53935"/> <circle cx="12" cy="12" r="6" fill="#FFFFFF"/> <path d="M12 2c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#388E3C"/> <path d="M16 10c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#388E3C"/> <path d="M8 10c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#388E3C"/>
+                </svg>
+                オードブル
+            </button>
+            <button class="category-button" data-category="pasta">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z" fill="#F5F5F5"/>
+                    <path d="M12 6c-2.761 0-5 2.239-5 5s2.239 5 5 5 5-2.239 5-5-2.239-5-5-5z" fill="#FFD700"/>
+                    <path d="M14 8c-1.105 0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z" fill="#FFC107"/>
+                    <path d="M10 8c1.105 0 2 .895 2 2s-.895 2-2 2-2-.895-2-2 .895-2 2-2z" fill="#FFC107"/>
+                    <path d="M12 10c-1.105 0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z" fill="#FFC107"/>
+                    <path d="M12 6.5c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z" fill="#D32F2F"/>
+                    <path d="M14 9c-1.105 0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z" fill="#C62828"/>
+                    <path d="M10 9c1.105 0 2 .895 2 2s-.895 2-2 2-2-.895-2-2 .895-2 2-2z" fill="#C62828"/>
+                    <path d="M19 14c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#4CAF50"/>
+                    <path d="M18 15c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#4CAF50"/>
+                </svg>
+                パスタ
+            </button>
+            <button class="category-button" data-category="fish-dishes">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 12c0-2.76-2.24-5-5-5H6c-2.76 0-5 2.24-5 5s2.24 5 5 5h8c2.76 0 5-2.24 5-5z" fill="#2196F3"/> <path d="M23 12l-4 4v-8l4 4z" fill="#1976D2"/> <circle cx="6" cy="12" r="1.5" fill="#FFFFFF"/>
+                    <circle cx="6.5" cy="12" r="0.5" fill="#212121"/>
+                    <path d="M9 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="#64B5F6"/> <path d="M11 11.5c.75 0 1.25 .5 1.25 1.25s-.5 1.25-1.25 1.25-1.25-.5-1.25-1.25.5-1.25 1.25-1.25z" fill="#FFFFFF" opacity="0.5"/>
+                    <path d="M13 11.5c.75 0 1.25 .5 1.25 1.25s-.5 1.25-1.25 1.25-1.25-.5-1.25-1.25.5-1.25 1.25-1.25z" fill="#FFFFFF" opacity="0.5"/>
+                    <path d="M15 11.5c.75 0 1.25 .5 1.25 1.25s-.5 1.25-1.25 1.25-1.25-.5-1.25-1.25.5-1.25 1.25-1.25z" fill="#FFFFFF" opacity="0.5"/>
+                </svg>
+                魚料理
+            </button>
+            <button class="category-button" data-category="meat-dishes">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="3" y="8" width="3" height="10" rx="1" fill="#D32F2F"/>
+                    <rect x="7" y="8" width="3" height="10" rx="1" fill="#C62828"/>
+                    <rect x="11" y="8" width="3" height="10" rx="1" fill="#B71C1C"/>
+                    <rect x="15" y="8" width="3" height="10" rx="1" fill="#C62828"/>
+                    <rect x="19" y="8" width="3" height="10" rx="1" fill="#D32F2F"/>
+                    <path d="M4 7c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2s-.9 2-2 2H6c-1.1 0-2-.9-2-2z" fill="#4CAF50"/>
+                    <path d="M20 18c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#4CAF50"/>
+                    <path d="M18 19c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#4CAF50"/>
+                    <path d="M16 18c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#4CAF50"/>
+                    <circle cx="4" cy="9" r="1.5" fill="#F44336"/>
+                    <circle cx="5" cy="10" r="1.5" fill="#F44336"/>
+                </svg>
+                肉料理
+            </button>
+            <button class="category-button" data-category="drink">
+                <!-- ワインボトルとグラスのSVGアイコン -->
+                <svg viewBox="0 0 24 24">
+                    <!-- ワインボトル本体 (黒) -->
+                    <path d="M11 22H9V12H7V22H5V2H11C11 2 11 12 11 12V22Z" fill="#333"/>
+                    <!-- ワインボトル内の液体 (深い赤) -->
+                    <path d="M10 12L10 21.5C10 21.7761 9.77614 22 9.5 22H6.5C6.22386 22 6 21.7761 6 21.5V12H10Z" fill="#6A0D0D"/>
+                    <!-- ワイングラスの液体 (深い赤) -->
+                    <path d="M13 12L17 2H19L15 12H13Z" fill="#6A0D0D"/>
+                    <path d="M12 14L16 22H20L16 14H12Z" fill="#6A0D0D"/>
+                    <!-- ワインボトル上のハイライト (明るいグレー) -->
+                    <path d="M18 6C18 4.89543 17.1046 4 16 4C14.8954 4 14 4.89543 14 6C14 7.10457 14.8954 8 16 8C17.1046 8 18 7.10457 18 6Z" fill="#AAAAAA"/>
+                    <!-- ワイングラスの脚と台座 (ストロークはfillの影響を受けない) -->
+                    <path d="M16 8L16 14" stroke="#666" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M14 14H18" stroke="#666" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M16 22L16 14" stroke="#666" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                ドリンク
+            </button>
+            <!-- コースボタン -->
+            <button class="category-button" data-category="courses">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M21 5H3C2.45 5 2 5.45 2 6v12c0 .55.45 1 1 1h18c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1zm-1 12H4V7h16v10z" fill="#666"/>
+                    <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="#6A0D0D"/>
+                    <path d="M12 11c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#FFFFFF" opacity="0.8"/>
+                    <path d="M10 17h4v-1h-4v1z" fill="#666"/>
+                    <path d="M10 7h4v1h-4V7z" fill="#666"/>
+                </svg>
+                コース
+            </button>
+            <!-- カフェ・デザートボタン -->
+            <button class="category-button" data-category="cafe-dessert">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 3H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H4V5h16v12z" fill="#666"/>
+                    <path d="M18 6H6v2h12V6z" fill="#6A0D0D"/>
+                    <path d="M18 10H6v2h12v-2z" fill="#6A0D0D"/>
+                    <path d="M18 14H6v2h12v-2z" fill="#6A0D0D"/>
+                    <circle cx="12" cy="11" r="3" fill="#FFD700"/>
+                    <path d="M12 11c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" fill="#FFFFFF" opacity="0.8"/>
+                </svg>
+                カフェ・デザート
+            </button>
+        </div>
+
+        <div id="menuContent">
+            <!-- JavaScriptが有効でない場合、またはメニューのロード中に表示されるメッセージ -->
+            <noscript>
+                <p style="text-align: center; color: #8B0000; font-weight: bold;">JavaScriptを有効にしてください。メニューを表示できません。</p>
+            </noscript>
+            <p id="loadingMessage" style="text-align: center; color: #777; font-style: italic;">メニューを読み込み中...</p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 Granata. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- 料理詳細表示用モーダル -->
+    <div id="dishDetailModal" class="detail-modal-overlay">
+        <div class="detail-modal-content">
+            <button class="detail-modal-close-button" onclick="closeDishDetailModal()">&times;</button>
+            <div class="detail-modal-image">
+                <img id="detailDishImage" src="" alt="料理の画像">
+            </div>
+            <h3 id="detailDishName"></h3>
+            <p class="detail-price" id="detailDishPrice"></p>
+            <!-- ここでinnerHTMLを使用するように変更 -->
+            <div id="detailDishDescription"></div>
+
+            <!-- おすすめペアリングセクション -->
+            <div id="recommendedPairingSection" class="recommended-pairing">
+                <strong>おすすめのペアリングワイン:</strong>
+                <span id="recommendedPairingText"></span>
+                <p id="recommendedPairingReason" class="pairing-reason"></p> <!-- ペアリング理由を追加 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // メニューデータ
+        const menuData = {
+            'hors-doeuvres': [
+                { name: "いろいろなオードブル盛合せ", description: "Assorted of Appetizers", price: "¥2,000 (2,420)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Appetizer", recommendedPairing: "スペローネ スプマンテ キュヴェ ブリュット", recommendedPairingReason: "様々な前菜に合う、すっきりとした辛口のスパークリングワインです。" },
+                { name: "ホワイトアスパラガスと玉子のグラタン ミラノ風", description: "Baked White Asparagus & Egg topped with Truffle Oil", price: "¥3,400 (4,114)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Gratin", recommendedPairing: "ヴィン ソアベ クラシコ '21", recommendedPairingReason: "ホワイトアスパラガスの繊細な風味とグラタンのクリーミーさに、ソアベのミネラル感とアーモンドのニュアンスがよく合います。" },
+                { name: "タコとセロリのサラダ", description: "Cooked Octopus & Celery Salad", price: "¥1,700 (2,057)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Octopus+Salad", recommendedPairing: "サルパルータ ロゼ'23", recommendedPairingReason: "タコの旨味とセロリの爽やかさに、ロゼワインの軽快な果実味と柑橘系の香りが調和します。" },
+                { name: "本日のスープ", description: "Today's Soup", price: "¥1,000 (1,210)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Soup" }, // ペアリングなし
+                { name: "フルーツトマトとストラッチャテッラチーズのカプレーゼ", description: "Fruit Tomato & Stracciatella Cheese Salad \"CAPRESE\"", price: "¥1,900 (2,299)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Caprese", recommendedPairing: "マンドーロ オルヴィエート クラッシコ' 23", recommendedPairingReason: "フレッシュなトマトとクリーミーなチーズに、すっきりとしたオルヴィエートが口の中をリフレッシュさせます。" },
+                { name: "ナスとチーズのオーブン焼", description: "Baked Eggplant & Parmesan Cheese", price: "¥1,700 (2,057)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Baked+Eggplant", recommendedPairing: "プリミティーヴォ ディ マンドゥーリア'21", recommendedPairingReason: "ナスのコクとチーズの風味に、プリミティーヴォの力強い果実味と滑らかなタンニンがマッチします。" },
+                { name: "本日の鮮魚のカルパッチョ サラダ添え", description: "Thinly Sliced Raw Fish of the day \"Carpaccio\" with Salad", price: "¥1,900～ (2,299～)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Carpaccio", recommendedPairing: "ソーヴィニヨン プライル アルト アディジェ'23", recommendedPairingReason: "新鮮な魚介の風味を最大限に引き出す、フレッシュでミネラル感のあるソーヴィニヨン・ブランです。" },
+                { name: "カラマリフリット", description: "Deep Fried Squid", price: "¥1,800 (2,178)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Calamari", recommendedPairing: "スペローネ スプマンテ キュヴェ ブリュット", recommendedPairingReason: "フリットの軽やかな食感とイカの旨味に、泡の爽やかさが相性抜群です。" },
+                { name: "生ハムとフルーツ", description: "Prosciutto & Fresh Fruit of the day", price: "¥2,000～ (2,420～)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Prosciutto", recommendedPairing: "サルパルータ ロゼ'23", recommendedPairingReason: "生ハムの塩味とフルーツの甘みに、ロゼワインのバランスの取れた酸味と果実味がよく合います。" },
+                { name: "いろいろなハムとチーズの盛合せ", description: "Assorted Various Ham & Cheese", price: "¥1,900 (2,299)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Ham+Cheese", recommendedPairing: "キャンティ クラッシコ' 22", recommendedPairingReason: "様々なハムとチーズの風味に、キャンティのしっかりとした骨格と果実味が調和します。" },
+                { name: "シェフのこだわり野菜サラダ", description: "Mixed Vegetables Salad", price: "¥1,600 (1,936)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Salad", recommendedPairing: "マンドーロ オルヴィエート クラッシコ' 23", recommendedPairingReason: "新鮮な野菜の風味を邪魔しない、すっきりとした白ワインです。" },
+                { name: "トマトのブルスケッタ アラ ケッカ", description: "Garlic Bread topped with Tomato & Basil", price: "¥400 (532)", imageUrl: "https://placehold.co/250x150/E57373/FFFFFF?text=Bruschetta", recommendedPairing: "ランブルスコ レッジアーノ セッコ\"コンチェルト\" '23", recommendedPairingReason: "トマトとバジルの爽やかさに、微発泡のランブルスコが軽快なハーモニーを奏でます。" }
+            ],
+            pasta: [
+                { name: "ヤリイカのスパゲッティ", description: "Spaghetti with Fresh Squid", price: "¥2,300 (2,783)", imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Squid+Pasta", recommendedPairing: "マンドーロ オルヴィエート クラッシコ' 23", recommendedPairingReason: "ヤリイカの繊細な風味とトマトソースに、オルヴィエートのすっきりとした酸味がよく合います。" },
+                { name: "パルメザンチーズのリゾット", description: "Parmesan Cheese Risotto", price: "¥2,000 (2,420)", imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Risotto", recommendedPairing: "ヴィン ソアベ クラシコ '21", recommendedPairingReason: "濃厚なパルメザンチーズのリゾットに、ソアベのまろやかな口当たりとナッツのニュアンスが深みを加えます。" },
+                { name: "ペンネ アラビアータ", description: "Penne with Hot Spicy Tomato Sauce", price: "¥1,800 (2,178)", imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Arrabbiata", recommendedPairing: "プリミティーヴォ ディ マンドゥーリア'21", recommendedPairingReason: "スパイシーなアラビアータに、プリミティーヴォの豊かな果実味と力強いタンニンがバランスをもたらします。" },
+                { name: "ストラッチャテッラチーズのせ トマトソースのスパゲッティ", description: "Spaghetti with Tomato Sauce Topped with Stracciatella Cheese", price: "¥2,000 (2,420)", imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Tomato+Pasta", recommendedPairing: "サルパルータ ロゼ'23", recommendedPairingReason: "トマトソースとクリーミーなチーズに、ロゼワインの軽やかな酸味と果実味が寄り添います。" },
+                { name: "ボローニャ風 ラザニア", description: "Lasagna", price: "¥2,100 (2,541)", imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Lasagna", recommendedPairing: "キャンティ クラッシコ' 22", recommendedPairingReason: "濃厚なラザニアに、キャンティのしっかりとしたボディと熟した果実味がよく合います。" },
+                { name: "海老とポルチーニ茸のスパゲッティ", description: "Spaghetti with Shrimp & Porcini Mushroom", price: "¥2,500 (3,025)", imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Shrimp+Pasta", recommendedPairing: "ソーヴィニヨン プライル アルト アディジェ'23", recommendedPairingReason: "海老とポルチーニ茸の豊かな香りに、ソーヴィニヨン・ブランのハーブやミネラルのニュアンスが引き立ちます。" },
+                { name: "神戸牛のボロネーゼ フェットチーネ", description: "Fettuccine with KOBE Beef Meat Sauce", price: "¥2,400 (2,904)", imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Bolognese", recommendedPairing: "メルロー'21", recommendedPairingReason: "神戸牛の旨味が凝縮されたボロネーゼに、メルローの滑らかな口当たりとブルーベリーのアロマが深みを与えます。" },
+                { name: "タラバガニとカラスミのスパゲッティ", description: "Spaghetti with King Crab \"TARABAGANI\" & Dried Mullet Roe \"KARASUMI\"", price: "¥4,500 (5,445)", imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Crab+Pasta", recommendedPairing: "プラネタ シャルドネ'22", recommendedPairingReason: "タラバガニとカラスミの濃厚な風味に、プラネタ シャルドネの芳醇で力強い味わいが贅沢な組み合わせです。" }
+            ],
+            'fish-dishes': [
+                { name: "本日の鮮魚(切身)の鉄板焼", description: "Grilled Fish (Fillet)", price: "¥2,700～ (3,267～)", imageUrl: "https://placehold.co/250x150/2196F3/FFFFFF?text=Grilled+Fish", recommendedPairing: "ソーヴィニヨン プライル アルト アディジェ'23", recommendedPairingReason: "シンプルな鉄板焼きの魚に、ソーヴィニヨン・ブランのフレッシュな酸味とハーブの香りがよく合います。" },
+                { name: "オマール海老の鉄板焼", description: "Grilled Lobster", price: "¥4,500 (5,445)", imageUrl: "https://placehold.co/250x150/2196F3/FFFFFF?text=Lobster", recommendedPairing: "プラネタ シャルドネ'22", recommendedPairingReason: "オマール海老の甘みと旨味に、プラネタ シャルドネの豊かなコクと複雑な香りが相乗効果をもたらします。" },
+                { name: "魚貝のフリット 盛合せ", description: "Assortment Fried Seafood", price: "¥2,800 (3,388)", imageUrl: "https://placehold.co/250x150/2196F3/FFFFFF?text=Fried+Seafood", recommendedPairing: "スペローネ スプマンテ キュヴェ ブリュット", recommendedPairingReason: "軽やかな魚介のフリットに、泡のすっきりとした味わいが口の中をさっぱりとさせます。" }
+            ],
+            'meat-dishes': [
+                { name: "仔牛のソテー マルサラワインソース", description: "Sauteed Veal with Marsara wine Sauce", price: "¥3,000 (3,630)", imageUrl: "https://placehold.co/250x150/D32F2F/FFFFFF?text=Veal+Saute", recommendedPairing: "プリミティーヴォ ディ マンドゥーリア'21", recommendedPairingReason: "仔牛のソテーとマルサラワインソースのコクに、プリミティーヴォの力強い果実味と滑らかなタンニンが深みを加えます。" },
+                { name: "仔牛のカツレツ トマト、ルッコラのせ", description: "Veal Cutlet topped with Tomato & Rucola Salad", price: "¥3,000 (3,630)", imageUrl: "https://placehold.co/250x150/D32F2F/FFFFFF?text=Veal+Cutlet", recommendedPairing: "キャンティ クラッシコ' 22", recommendedPairingReason: "仔牛のカツレツの旨味とトマト、ルッコラの爽やかさに、キャンティのバランスの取れた酸味と果実味がよく合います。" },
+                { name: "国産牛のグリル", description: "Grilled Japanese Beef", price: "100g ¥2,500(3,025) / 150g ¥3,500(4,235) /<br>200g ¥4,500(5,445) / 250g ¥5,500(6,655)", imageUrl: "https://placehold.co/250x150/D32F2F/FFFFFF?text=Grilled+Beef", recommendedPairing: "メルロー'21", recommendedPairingReason: "国産牛のグリルには、メルローの豊かな果実味と柔らかなタンニンが肉の旨味を引き立てます。" },
+                { name: "国産牛のタリアータ（薄切りステーキ）サラダ添え バルサミコソース", description: "Seared Wagyu Beef & Fresh Salad with Balsamico Sauce", price: "100g ¥2,700(3,267) / 150g ¥3,800(4,598)", imageUrl: "https://placehold.co/250x150/D32F2F/FFFFFF?text=Tagliata", recommendedPairing: "ジゾラ '21", recommendedPairingReason: "タリアータの香ばしさとバルサミコソースの酸味に、ジゾラの凝縮感のあるエレガントな味わいが調和します。" },
+                { name: "骨付 仔羊ロースのグリル", description: "Grilled Lamb Chop", price: "¥4,900 (5,929)", imageUrl: "https://placehold.co/250x150/D32F2F/FFFFFF?text=Grilled+Lamb", recommendedPairing: "アル パッソ '21", recommendedPairingReason: "仔羊のグリルには、アル パッソの完熟したフルーツのアロマとエレガントな味わいが最適です。" },
+                { name: "牛ほほ肉の赤ワイン煮", description: "Beef Cheek Stewed in Red Wine", price: "¥3,200 (3,872)", imageUrl: "https://placehold.co/250x150/D32F2F/FFFFFF?text=Beef+Cheek", recommendedPairing: "ブルネッロ ディ モンタルチーノ '18", recommendedPairingReason: "濃厚な牛ほほ肉の赤ワイン煮には、ブルネッロ ディ モンタルチーノのフルボディで複雑な味わいが完璧にマッチします。" }
+            ],
+            drink: [
+                {
+                    name: "キャンティ クラッシコ' 22",
+                    description: "CHIANTI CLASSICO '22 (D.O.C.G) Rocca delle Macie 【TOSCANA】/ サンジョヴェーゼ95% メルロー5% キャンティ地方の中心部だけで造られるワインです。",
+                    prices: [
+                        { type: "グラス", value: "¥800 (968)" },
+                        { type: "デカンタ", value: "¥3,100 (3,751)" },
+                        { type: "ボトル", value: "¥4,600 (5,566)" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine"
+                },
+                {
+                    name: "プリミティーヴォ ディ マンドゥーリア'21",
+                    description: "PRIMITVO DI MANDURIA '21　(D.O.C) Poggio Le Volpi 【LAZIO】/ プリミティーヴォ 100% 艶のあるルビーレッド色。生き生きとしたタンニンがあり、滑らかな口当たり。",
+                    prices: [
+                        { type: "グラス", value: "¥1,150 (1,391)" },
+                        { type: "デカンタ", value: "¥4,400 (5,324)" },
+                        { type: "ボトル", value: "¥6,600 (7,986)" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine"
+                },
+                {
+                    name: "メルロー'21",
+                    description: "MERLOT '21　(I.G.P) San Marzano 【PUGLIA】　　　　メルロー100% ブルーベリーのアロマとカシスリキュールのような果実味。口当たりは滑らかで清涼感のあるボディ。",
+                    prices: [
+                        { type: "グラス", value: "¥1,550 (1,875)" },
+                        { type: "デカンタ", value: "¥6,000 (7,260)" },
+                        { type: "ボトル", value: "¥9,000 (10,890)" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine"
+                },
+                {
+                    name: "サルパルータ ロゼ'23",
+                    description: "SARAPARUTA ROSE '23　(D.O.C) Duca di Salaparuta 【SICILIA】 / フラッパート、その他 淡く輝きのあるロゼ色で、柑橘系の香りの中に白桃のニュアンスがある軽快な飲み口のワインです。",
+                    prices: [
+                        { type: "グラス", value: "¥1,000 (1,210)" },
+                        { type: "デカンタ", value: "¥3,800 (4,598)" },
+                        { type: "ボトル", value: "¥5,700 (6,897)" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/FF69B4/FFFFFF?text=Rose+Wine"
+                },
+                {
+                    name: "【微発泡】ランブルスコ レッジアーノ セッコ\"コンチェルト\" '23",
+                    description: "LAMBRUSCO REGGIANO SECCO \"CONCERTO\" '23　(D.O.C) Medici Ermete 【EMILIA ROMAGNA】/ ランブルスコサラミーノ種100% 果実の旨味と程よいタンニンが広がる、前菜から肉料理まで相性抜群の辛口赤スパークリングです。",
+                    prices: [{ type: "", value: "¥5,500 (6,655)" }],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Sparkling+Red"
+                },
+                {
+                    name: "ジゾラ '21",
+                    description: "ZISOLA '21　(I.G.T) Mazzei 【SICILIA】/ ロ・ダヴォラ100% 奥行きのある高い凝縮感を持ったエレガントな味わいです。",
+                    prices: [{ type: "", value: "¥7,600 (9,196)" }],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine" },
+                {
+                    name: "アル パッソ '21",
+                    description: "AL PASSO '21　(I.G.T) Tolaini 【TOSCANA】/ サンジョヴェーゼ85% メルロー15% 完熟したフルーツのアロマ。エレガントなワインです。",
+                    prices: [{ type: "", value: "¥8,400 (10,164)" }],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine"
+                },
+                {
+                    name: "モンテプルチアーノ ダブルッツォ DOC リゼルヴァ '17",
+                    description: "MONTEPULCIANO D'ABRUZZO DOC RISERVA '17　(D.O.C) Terre di Poggio 【ABRUZZO】/ モンテプルチアーノ 100% 熟した果物が濃縮感のある香りで、バランスよく調和がとれ、しっかりとしたタンニンも感じる骨格の良いワイン。",
+                    prices: [{ type: "", value: "¥9,200 (11,132)" }],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine"
+                },
+                {
+                    name: "ファルニート'18",
+                    description: "FARNITO '18　(I.G.T) Carpineto 【TOSCANA】/ カベルネソーヴィニョン100% ブラックベリーの果実味とスモーキーな樽香がバランス良く調和。 豊潤で力強い。",
+                    prices: [{ type: "", value: "¥10,000 (12,100)" }],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine"
+                },
+                {
+                    name: "ブルネッロ ディ モンタルチーノ '18",
+                    description: "BRUNELLO DI MONTALCINO '18　(D.O.C.G) Centolani 【TOSCANA】/ サンジョヴェーゼグロッソ100% ピロードのようなタンニンとまろやかで柔らかな、ストラクチャーのフルボディで土壌由来のミネラルと、樽由来の杉とタバコのアロマが感じられます。",
+                    prices: [{ type: "", value: "¥15,000 (18,150)" }],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine"
+                },
+                {
+                    name: "バローロ '13",
+                    description: "BAROLO '13　(D.O.C.G) Nicolello 【PIEMONTE】　/ ネッビオーロ100% ワインの王様「バローロ」。深みのあるガーネット色にオレンジがかったエッジで、エレガントで力強いワインです。",
+                    prices: [{ type: "", value: "¥15,000 (18,150)" }],
+                    imageUrl: "https://placehold.co/250x150/8B0000/FFFFFF?text=Red+Wine"
+                },
+                // 白ワイン
+                {
+                    name: "マンドーロ オルヴィエート クラッシコ' 23",
+                    description: "MANDORLO ORVIETO CLASSICO '23 (D.O.C) Rocca delle Macie 【UMBRIA】/ トレビアーノ50%他 すっきりしたのどごしで、繊細な味のオルヴィエートです。",
+                    prices: [
+                        { type: "グラス", value: "¥800 (968)" },
+                        { type: "デカンタ", value: "¥3,100 (3,751)" },
+                        { type: "ボトル", value: "¥4,600 (5,566)" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=White+Wine"
+                },
+                {
+                    name: "ヴィン ソアベ クラシコ '21",
+                    description: "VIN SOAVE CLASSICO '21 (D.O.C) Inama【VENETO】/ ガルガーネガ100% 透き通った黄色。カモミールやアイリスなどの甘い香りで、余韻にはアーモンドの風味があります。",
+                    prices: [
+                        { type: "グラス", value: "¥1,050 (1,270)" },
+                        { type: "デカンタ", value: "¥4,000 (4,840)" },
+                        { type: "ボトル", value: "¥6,000 (7,260)" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=White+Wine"
+                },
+                {
+                    name: "ソーヴィニヨン プライル アルト アディジェ'23",
+                    description: "SAUVIGNON PRAIL ALTO ADIGE DOC '23 (D.O.C) Colterenzio 【Trentino Alto Adige】/ ソーヴィニヨン ブラン 100% 緑がかった明るい黄色。余韻にミネラルを感じるフレッシュな味わい。「プライル」は畑の名前。",
+                    prices: [
+                        { type: "グラス", value: "¥1,550 (1,876)" },
+                        { type: "デカンタ", "value": "¥6,000 (7,260)" },
+                        { type: "ボトル", "value": "¥9,000 (10,890)" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=White+Wine"
+                },
+                {
+                    name: "ヴィラ・ヴェスコヴィレ ピノ・グリージョ'22",
+                    description: "VILLA VESCOVILE PINOT GRIGIO '22(D.O.C) Villa Vescovile【Trentino-Aloto Adige 】/ ピノ・グリージョ 100%他 フレッシュな果実とアーモンドの香り。程よい酸味とボリューム感があります。",
+                    prices: [{ type: "", value: "¥6,000 (7,260)" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=White+Wine"
+                },
+                {
+                    name: "【甘口】モスカート ダスティ '22",
+                    description: "MOSCATO D'ASTI '22 (D.O.C) Ceretto 【PIEMONTE】/ モスカート種100% 微炭酸でアルコール度数も低く（5～6％）、ほのかな甘味のある味わいは女性に大人気です。",
+                    prices: [{ type: "", value: "¥6,700 (8,107)" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Sweet+White"
+                },
+                {
+                    name: "ガヴィ デル コムーネ ディ ガヴィ '23",
+                    description: "GAVI DEL COMUNE DI GAVI '23 (D.O.C.G) Villa Sparina 【PIEMONTE】/ コルテーゼ100% きりっとした酸味と爽やかな果実味とのバランスが良くとれたワインです。",
+                    prices: [{ type: "", value: "¥7,000 (8,470)" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=White+Wine"
+                },
+                {
+                    name: "ピエモンテ シャルドネ バリック'22",
+                    description: "PIEMONTE CHARDONNAY FILEBSSE '22 (D.O.C) Viverti Giovani 【PIEMONTE】/ シャルドネ100% バナナ、リンゴ、トロピカルフルーツのアロマにアカシアの花のニュアンス。柔らかな飲み口。フレッシュな酸味とのバランスに優れた味わい。",
+                    prices: [{ type: "", value: "¥7,800 (9,438)" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=White+Wine"
+                },
+                {
+                    name: "アルターレ'22",
+                    description: "ALTARE '22 (D.O.C) Marramiero 【ABRUZZO】/ トレッビアーノ100% 果実の凝縮度が高く、クリーミーでふくよかな果実味を滑らかな酸がバランスよく支えるワインです。",
+                    prices: [{ type: "", value: "¥9,600 (11,616)" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=White+Wine"
+                },
+                {
+                    name: "プラネタ シャルドネ'22",
+                    description: "PLANETA CHARDONNAY '22 (I.G.T) Planeta 【SICILIA】/ シャルドネ100% シチリア産シャルドネ特有の大変芳醇で温かみのある力強いワインです。",
+                    prices: [{ type: "", value: "¥20,000 (24,200)" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=White+Wine"
+                },
+                // スパークリングワイン
+                {
+                    name: "スペローネ スプマンテ キュヴェ ブリュット",
+                    description: "SPERONE SPUMANTE CUVEE BRUT (D.O.C) Sperone 【PIEMONTE】/ シャルドネ 75% トレビアーノ 25%",
+                    prices: [
+                        { type: "グラス", value: "¥850 (1,028)" },
+                        { type: "デカンタ", value: "¥4,900 (5,929)" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/ADD8E6/6A0D0D?text=Sparkling+Wine"
+                },
+                {
+                    name: "フランチャコルタ ブリュット",
+                    description: "FRANCIACORTA BRUT (D.O.C.G) Contadi Castaldi 【LOMBARDIA】 / シャルドネ80% ピノネロ 10% ビアンコ 10%",
+                    prices: [{ type: "ボトル", value: "¥8,000 (9,680)" }],
+                    imageUrl: "https://placehold.co/250x150/ADD8E6/6A0D0D?text=Sparkling+Wine"
+                },
+                // 食前酒
+                {
+                    name: "生ビール",
+                    description: "（アサヒ スーパードライ）Draft Beer (ASAHI SUPER DRY)",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Beer"
+                },
+                {
+                    name: "チンザノ",
+                    description: "〈ドライ 又はスウィート〉CINZANO (Dry or Sweet)",
+                    prices: [{ type: "", value: "¥700（847）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Aperitif"
+                },
+                {
+                    name: "ペローニ ナストロ アズーロ",
+                    description: "PERONI NASTRO AZZURRO",
+                    prices: [{ type: "", value: "¥850（1,028）" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Beer"
+                },
+                {
+                    name: "カンパリソーダ",
+                    description: "CAMPARI Soda",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "小瓶ビール",
+                    description: "Bottle Beer (KIRIN or ASAHI)",
+                    prices: [{ type: "", value: "¥700（847）" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Beer"
+                },
+                {
+                    name: "カンパリオレンジ",
+                    description: "CAMPARI & Orange",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "ドライシェリー",
+                    description: "Dry Sherry",
+                    prices: [{ type: "", value: "¥700（847）" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Sherry"
+                },
+                {
+                    name: "ジントニック",
+                    description: "Gin & Tonic",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "キール",
+                    description: "〈白ワイン ＆ カシス〉Kir",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "ミモザ",
+                    description: "〈スパークリングワイン ＆ オレンジジュース〉Mimoza",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "キールロワイヤル",
+                    description: "〈スパークリングワイン ＆ カシス〉Kir Royal",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "ベリーニ",
+                    description: "〈スパークリングワイン ＆ ピーチネクター〉Bellini",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "カシス ソーダ",
+                    description: "〈ソーダ、オレンジジュース 又は ウーロン茶〉Cassis & Soda,Orange Juice or Oolong Tea",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "ネグローニ",
+                    description: "〈ジン、カンパリ ＆ スウィートベルモット〉Negroni",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "スクリュ－ドライバー",
+                    description: "〈ウォッカ ＆ オレンジジュース〉Screwdriver",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "シチリアーノ",
+                    description: "〈赤ワイン、アマレット ＆ トニックウォーター〉Siciliano",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                {
+                    name: "マティーニ",
+                    description: "〈ジン ＆ ベルモット〉Matini",
+                    prices: [{ type: "", value: "¥700（847）" }],
+                    imageUrl: "https://placehold.co/250x150/FF8C00/FFFFFF?text=Cocktail"
+                },
+                // ウィスキー
+                {
+                    name: "シーバス リーガル",
+                    description: "CHIVAS REAGAL",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/8B4513/FFFFFF?text=Whisky"
+                },
+                {
+                    name: "バランタイン",
+                    description: "Ballantines",
+                    prices: [{ type: "", value: "¥1,500（1,815）" }],
+                    imageUrl: "https://placehold.co/250x150/8B4513/FFFFFF?text=Whisky"
+                },
+                {
+                    name: "ネーヴィス デュー",
+                    description: "NEVIS DEW",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/8B4513/FFFFFF?text=Whisky"
+                },
+                {
+                    name: "ＩＷ ハーパー",
+                    description: "IW HARPER",
+                    prices: [{ type: "", value: "¥750（907）" }],
+                    imageUrl: "https://placehold.co/250x150/8B4513/FFFFFF?text=Whisky"
+                },
+                // 食後酒
+                {
+                    name: "グラッパ",
+                    description: "GRAPPA",
+                    prices: [{ type: "", value: "¥800～（968～）" }],
+                    imageUrl: "https://placehold.co/250x150/8B4513/FFFFFF?text=Digestivo"
+                },
+                {
+                    name: "自家製 リモンチェッロ",
+                    description: "LIMONCELLO",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Limoncello"
+                },
+                {
+                    name: "フランジェリコ",
+                    description: "FRANGELICO ヘーゼルナッツのリキュール酒",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/8B4513/FFFFFF?text=Liqueur"
+                },
+                {
+                    name: "ノチェッロ",
+                    description: "NOCELLO クルミのリキュール酒",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/8B4513/FFFFFF?text=Liqueur"
+                },
+                {
+                    name: "アベルナ アマーロ",
+                    description: "AVERNA AMARO シチリア島の薬草酒",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/8B4513/FFFFFF?text=Amaro"
+                },
+                {
+                    name: "パッシート パンテレッリア",
+                    description: "PASSITO PANTELLERIA シチリアのデザートワイン",
+                    prices: [{ type: "", value: "¥800（968）" }],
+                    imageUrl: "https://placehold.co/250x150/FFD700/6A0D0D?text=Dessert+Wine"
+                },
+                // ノンアルコールワイン
+                {
+                    name: "スパークリングワイン",
+                    description: "Non Alcohol Wine Sparkling Wine",
+                    prices: [{ type: "", value: "¥1,200（1,452）" }],
+                    imageUrl: "https://placehold.co/250x150/90EE90/6A0D0D?text=Non-Alcohol+Sparkling"
+                },
+                {
+                    name: "シャルドネ",
+                    description: "Non Alcohol Wine 〈白ワイン〉Chardonnay",
+                    prices: [{ type: "", value: "¥1,200（1,452）" }],
+                    imageUrl: "https://placehold.co/250x150/90EE90/6A0D0D?text=Non-Alcohol+White"
+                },
+                {
+                    name: "メルロー",
+                    description: "Non Alcohol Wine 〈赤ワイン〉Merlot",
+                    prices: [{ type: "", value: "¥1,200（1,452）" }],
+                    imageUrl: "https://placehold.co/250x150/90EE90/6A0D0D?text=Non-Alcohol+Red"
+                },
+                // ソフトドリンク
+                {
+                    name: "ザクロ ＆ エルダーフラワー ジュース",
+                    description: "bottlegreen(Pomegranate & Elder flower)",
+                    prices: [{ type: "", value: "¥1,000（1,210）" }],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Juice"
+                },
+                {
+                    name: "コカコーラ",
+                    description: "Coca Cola",
+                    prices: [{ type: "", value: "¥550（665）" }],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Coca+Cola"
+                },
+                {
+                    name: "ノンアルコールビール（小瓶）",
+                    description: "Non Alcohol Beer",
+                    prices: [{ type: "", value: "¥650（787）" }],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Non-Alcohol+Beer"
+                },
+                {
+                    name: "コカコーラゼロ",
+                    description: "Coca Cola Zero",
+                    prices: [{ type: "", value: "¥550（665）" }],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Coca+Cola+Zero"
+                },
+                {
+                    name: "サンペレグリーノ",
+                    description: "（ガス入り ミネラルウォーター）S. PELLEGRINO",
+                    prices: [
+                        { type: "500ml", value: "¥700（847）" },
+                        { type: "1,000ml", value: "¥900（1,089）" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Mineral+Water"
+                },
+                {
+                    name: "パンナ",
+                    description: "（ミネラルウォーター）PANNA",
+                    prices: [
+                        { type: "500ml", value: "¥700（847）" },
+                        { type: "1,000ml", value: "¥900（1,089）" }
+                    ],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Mineral+Water"
+                },
+                {
+                    name: "ジンジャーエール",
+                    description: "Ginger Ale",
+                    prices: [{ type: "", value: "¥550（665）" }],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Ginger+Ale"
+                },
+                {
+                    name: "ウーロン茶",
+                    description: "Oolong Tea",
+                    prices: [{ type: "", value: "¥550（665）" }],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Oolong+Tea"
+                },
+                {
+                    name: "リンゴジュース",
+                    description: "Apple Juice",
+                    prices: [{ type: "", value: "¥500（605）" }],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Apple+Juice"
+                },
+                {
+                    name: "オレンジジュース",
+                    description: "Orange Juice",
+                    prices: [{ type: "", value: "¥600（726）" }],
+                    imageUrl: "https://placehold.co/250x150/FFA500/FFFFFF?text=Orange+Juice"
+                },
+                {
+                    name: "トマトジュース",
+                    description: "Tomato Juice",
+                    prices: [{ type: "", value: "¥500（605）" }],
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Tomato+Juice" }
+            ],
+            // コースメニューデータ
+            courses: [
+                {
+                    name: "マンスリーコース",
+                    description: "Corso Mensile",
+                    price: "¥7,000 (8,470)",
+                    imageUrl: "https://placehold.co/250x150/6A0D0D/FFFFFF?text=Monthly+Course",
+                    fullDescription: `
+                        <p>ブルスケッタ アラ ケッカ<br>Garlic Bread topped with Tomato & Basil</p>
+                        <p>オードブル盛合せ<br>Assorted kinds of Appetizer</p>
+                        <p>バジリコと松の実のジェノバ風 トロフィエ<br>Trofie with Basil & Pinenuts Sauce "GENOVA Style"</p>
+                        <p>ボローニャ風 ラザニア<br>Lasagna</p>
+                        <p>魚介の鉄板焼 盛合せ<br>又は ホロホロ鶏と野菜のスピエディーニ（銀串焼き）<br>Assortment Grilled Seafood or Skewered of Guinea Fowl & Vegetables</p>
+                        <p>パ　ン<br>Bread</p>
+                        <p>本日のデザート２品盛合せ<br>Assorted 2 kind of Dessert</p>
+                        <p>コーヒー、紅 茶 又は ハーブティー<br>Coffee, Tea or Herb Tea</p>
+                    `
+                },
+                {
+                    name: "グラナータコース",
+                    description: "Corso Granata",
+                    price: "¥9,500 (11,495)",
+                    imageUrl: "https://placehold.co/250x150/6A0D0D/FFFFFF?text=Granata+Course",
+                    fullDescription: `
+                        <p>オードブル盛り合せ<br>（フルーツトマトとストラッチャテッラチーズのカプレーゼ / 鮮魚のカルパッチョ サラダ添え / 生ハムと本日のフルーツ）<br>Assorted 3 Kinds of Appetizer<br>（ Fruit Tomato & Stracciatella Cheese Salad "CAPRESE" / Thinly Sliced Raw Fish of the day "Carpaccio" / Prosciutto & Fresh Fruit of the day）</p>
+                        <p>ホワイトアスパラガスと玉子のグラタン ミラノ風<br>Baked White Asparagus & Egg topped with Truffle Oil</p>
+                        <p>桜エビとトマト、ルッコラのタリオリーニ（細い手打麺）<br>Tagliolini with Tiny Shrimp "SAKURA EBI" Tomato & Rucola</p>
+                        <p>春野菜のリゾット<br>Risotto with Seasonal Vegetables</p>
+                        <p>■メイン料理（１種をお選びください）<br>Please Select One Your Favorite Main Dish</p>
+                        <ul>
+                            <li>・オマール海老の鉄板焼 （+￥1,331)<br>Grilled Lobster</li>
+                            <li>・牛ほほ肉の赤ワイン煮<br>Stewed Cheek Beef in a Red Wine Sauce</li>
+                            <li>・国産牛のタリアータ（薄切りステーキ） サラダ添え バルサミコソース<br>Seared Wagyu Beef & Fresh Salad with Balsamico Sauce</li>
+                            <li>・骨付 仔羊ロースのグリル<br>Grilled Lamb</li>
+                        </ul>
+                        <p>パ　ン<br>Bread</p>
+                        <p>本日のデザート２品盛合せ<br>Assorted 2 kind of Dessert</p>
+                        <p>コーヒー、紅 茶 又は ハーブティー<br>Coffee, Tea or Herb Tea</p>
+                    `
+                }
+            ],
+            // カフェ・デザートメニューデータ
+            'cafe-dessert': [
+                {
+                    name: "季節のフルーツ ロマノフ",
+                    description: "Seasonal Fresh Fruit Sponge Cake",
+                    price: "¥1,000（1,210）",
+                    imageUrl: "https://placehold.co/250x150/FFB6C1/FFFFFF?text=Fruit+Cake",
+                    fullDescription: "たっぷりのマスカルポーネチーズをお入れした生クリームと季節の美味しいフルーツでおつくりしたケーキです<br>〈デザートセット時+￥150（181）〉"
+                },
+                {
+                    name: "Topsのチョコレートケーキ",
+                    description: "Top's Chocolate Cake",
+                    price: "¥850（1,028）",
+                    imageUrl: "https://placehold.co/250x150/8B4513/FFFFFF?text=Chocolate+Cake",
+                    fullDescription: "クルミの入ったクリームでスポンジをサンド。<br>スイスチョコレート入りのチョコレートクリームで仕上げました。"
+                },
+                {
+                    name: "Topsのチーズケーキ",
+                    description: "Top's Cheese Cake",
+                    price: "¥850（1,028）",
+                    imageUrl: "https://placehold.co/250x150/F0E68C/6A0D0D?text=Cheese+Cake",
+                    fullDescription: "デンマーク産のクリームチーズを使った、コクのあるハードタイプのケーキです。"
+                },
+                {
+                    name: "ティラミス",
+                    description: "Tiramisu Cake",
+                    price: "¥750（907）",
+                    imageUrl: "https://placehold.co/250x150/A0522D/FFFFFF?text=Tiramisu",
+                    fullDescription: "「エスプレッソ」をしみ込ませたスポンジに「マスカルポーネチーズ」たっぷりのクリームを重ねたデザートです。"
+                },
+                {
+                    name: "ガトーショコラ",
+                    description: "生クリーム添え<br>Gateau Chocolat with Fresh Cream",
+                    price: "¥750（907）",
+                    imageUrl: "https://placehold.co/250x150/5C4033/FFFFFF?text=Gateau+Chocolat",
+                    fullDescription: "濃厚なチョコレートケーキに無糖の生クリームを添えてます"
+                },
+                {
+                    name: "本日のタルト",
+                    description: "Tarte of the Day \"Please ask Server\"",
+                    price: "¥750（907）",
+                    imageUrl: "https://placehold.co/250x150/D2B48C/6A0D0D?text=Today's+Tarte",
+                    fullDescription: "季節のタルトをご用意いたしております。<br>スタッフにお尋ねください。"
+                },
+                {
+                    name: "カスタードプリン",
+                    description: "Custard Pudding",
+                    price: "¥750（907）",
+                    imageUrl: "https://placehold.co/250x150/F0E68C/6A0D0D?text=Pudding",
+                    fullDescription: "卵をたっぷり使ったプリンに苦みのあるカラメルソースが良く合います"
+                },
+                {
+                    name: "本日のシャーベット",
+                    description: "Sherbet of the Day \"Please ask Server\"",
+                    price: "¥750（907）",
+                    imageUrl: "https://placehold.co/250x150/ADD8E6/FFFFFF?text=Sherbet",
+                    fullDescription: "季節のシャーベットをご用意いたしております。<br>スタッフにお尋ねください。"
+                },
+                {
+                    name: "プルーンの赤ワイン煮",
+                    description: "バニラアイス添え<br>Chilled Boiled Prune with Red Wine<br>with Vanilla Icecream",
+                    price: "¥750（907）",
+                    imageUrl: "https://placehold.co/250x150/800000/FFFFFF?text=Prune+Dessert",
+                    fullDescription: "鉄、ミネラル、ビタミン等を多く含んでいます。<br>バニラアイスと良く合います。"
+                },
+                {
+                    name: "コーヒー",
+                    description: "（ホット または アイス）<br>Coffee（Hot or Ice）",
+                    price: "¥600（726）",
+                    imageUrl: "https://placehold.co/250x150/A0522D/FFFFFF?text=Coffee"
+                },
+                {
+                    name: "エスプレッソ",
+                    description: "Espresso Coffee",
+                    price: "¥600（726）",
+                    imageUrl: "https://placehold.co/250x150/A0522D/FFFFFF?text=Espresso"
+                },
+                {
+                    name: "紅 茶",
+                    description: "（ホット または アイス）<br>Tea（Hot or Ice）",
+                    price: "¥600（726）",
+                    imageUrl: "https://placehold.co/250x150/BDB76B/FFFFFF?text=Tea"
+                },
+                {
+                    name: "カプチーノ",
+                    description: "（ホット または アイス）<br>Cappuccino Coffee（Hot or Ice）",
+                    price: "¥650（786）",
+                    imageUrl: "https://placehold.co/250x150/A0522D/FFFFFF?text=Cappuccino",
+                    fullDescription: "〈セット時 +50〉"
+                },
+                {
+                    name: "カフェラテ",
+                    description: "（ホット または アイス）<br>Caffelatte（Hot or Ice）",
+                    price: "¥650（786）",
+                    imageUrl: "https://placehold.co/250x150/A0522D/FFFFFF?text=Caffelatte",
+                    fullDescription: "〈セット時 +50〉"
+                },
+                {
+                    name: "オレンジジュース",
+                    description: "Orange Juice",
+                    price: "¥600（726）",
+                    imageUrl: "https://placehold.co/250x150/FFA500/FFFFFF?text=Orange+Juice"
+                },
+                {
+                    name: "ハーブティー",
+                    description: "Herb Tea",
+                    price: "¥600（726）",
+                    imageUrl: "https://placehold.co/250x150/90EE90/6A0D0D?text=Herb+Tea",
+                    fullDescription: "・カモミール （Camomile）<br>・レモンミント （Lemon & Mint）<br>・森のいちご （Wild strawberry）"
+                },
+                {
+                    name: "ウーロン茶（アイス）",
+                    description: "Iced Oolong Tea",
+                    price: "¥550（665）",
+                    imageUrl: "https://placehold.co/250x150/778899/FFFFFF?text=Oolong+Tea"
+                }
+            ]
+        };
+
+        const categoryButtons = document.querySelectorAll('.category-button');
+        const menuContentDiv = document.getElementById('menuContent');
+        const dishDetailModal = document.getElementById('dishDetailModal');
+        const detailDishImage = document.getElementById('detailDishImage');
+        const detailDishName = document.getElementById('detailDishName');
+        const detailDishPrice = document.getElementById('detailDishPrice');
+        const detailDishDescription = document.getElementById('detailDishDescription'); // div要素に変更
+        const recommendedPairingSection = document.getElementById('recommendedPairingSection'); // 新しいペアリング表示要素
+        const recommendedPairingText = document.getElementById('recommendedPairingText'); // 新しいペアリングテキスト要素
+        const recommendedPairingReason = document.getElementById('recommendedPairingReason'); // 新しいペアリング理由要素
+
+        // メニューを表示する関数
+        function displayMenu(category) {
+            console.log(`Attempting to display menu for category: ${category}`);
+
+            // 現在表示されているメニューを非表示にする
+            const currentMenu = menuContentDiv.querySelector('.menu-section.active');
+            if (currentMenu) {
+                currentMenu.classList.remove('active');
+            }
+
+            // 新しいメニューセクションを生成または取得
+            let targetSection = document.getElementById(`menu-${category}`);
+            if (!targetSection) {
+                targetSection = document.createElement('div');
+                targetSection.id = `menu-${category}`;
+                targetSection.classList.add('menu-section');
+                menuContentDiv.appendChild(targetSection);
+            }
+
+            // メニューセクションの内容をクリアして再構築
+            targetSection.innerHTML = `<h3>${getCategoryTitle(category)}</h3>`;
+            const items = menuData[category];
+            if (items) {
+                items.forEach(item => {
+                    let priceHtml;
+                    let pricesForModal;
+
+                    // item.prices が配列として存在するかどうかをチェック
+                    if (item.prices && Array.isArray(item.prices)) {
+                        // 新しい形式 (prices配列)
+                        priceHtml = item.prices.map(p => {
+                            if (p.type) {
+                                return `<span>${p.type} ${p.value}</span>`;
+                            } else {
+                                return `<span>${p.value}</span>`;
+                            }
+                        }).join('<br>');
+                        pricesForModal = item.prices; // 配列をそのまま渡す
+                    } else {
+                        // 従来の形式 (price文字列)
+                        priceHtml = `<span>${item.price}</span>`;
+                        // モーダル用に配列形式に変換して渡す
+                        pricesForModal = [{ type: "", value: item.price }];
+                    }
+
+                    const menuItemHtml = `
+                        <div class="menu-item" 
+                             data-name="${item.name}" 
+                             data-description="${item.description || ''}" 
+                             data-price-json='${JSON.stringify(pricesForModal)}' 
+                             data-image-url="${item.imageUrl}"
+                             data-full-description="${encodeURIComponent(item.fullDescription || '')}"
+                             data-recommended-pairing="${encodeURIComponent(item.recommendedPairing || '')}"
+                             data-recommended-pairing-reason="${encodeURIComponent(item.recommendedPairingReason || '')}"> <!-- recommendedPairingReasonを追加 -->
+                            <div class="menu-item-image">
+                                <img src="${item.imageUrl}" alt="${item.name}の画像" onerror="this.onerror=null;this.src='https://placehold.co/250x150/CCCCCC/666666?text=Image+Not+Found';">
+                            </div>
+                            <div class="menu-item-content">
+                                <h4>
+                                    <span class="dish-name">${item.name}</span> 
+                                    <span class="price">${priceHtml}</span>
+                                </h4>
+                                <p>${item.description || ''}</p>
+                                <span class="tap-indicator">
+                                    タップで詳細を見る
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    targetSection.insertAdjacentHTML('beforeend', menuItemHtml);
+                });
+
+                // 各メニュー項目にクリックイベントリスナーを設定
+                targetSection.querySelectorAll('.menu-item').forEach(itemElement => {
+                    itemElement.addEventListener('click', (event) => {
+                        // イベントの伝播を停止し、親要素のクリックを防止
+                        event.stopPropagation(); 
+                        const name = itemElement.dataset.name;
+                        const description = itemElement.dataset.description;
+                        const fullDescription = decodeURIComponent(itemElement.dataset.fullDescription || '');
+                        const prices = JSON.parse(itemElement.dataset.priceJson);
+                        const imageUrl = itemElement.dataset.imageUrl;
+                        const recommendedPairing = decodeURIComponent(itemElement.dataset.recommendedPairing || ''); // recommendedPairingを取得
+                        const recommendedPairingReasonData = decodeURIComponent(itemElement.dataset.recommendedPairingReason || ''); // recommendedPairingReasonを取得
+                        openDishDetailModal({ name, description, prices, imageUrl, fullDescription, recommendedPairing, recommendedPairingReason: recommendedPairingReasonData }); // recommendedPairingReasonを渡す
+                    });
+                });
+            }
+            console.log(`Menu for category ${category} data processed.`);
+
+            // 新しいメニューセクションを表示
+            targetSection.classList.add('active');
+            console.log(`Menu for category ${category} displayed successfully.`);
+        }
+
+        // カテゴリ名から表示用のタイトルを取得するヘルパー関数
+        function getCategoryTitle(categoryKey) {
+            switch (categoryKey) {
+                case 'hors-doeuvres': return 'オードブル';
+                case 'pasta': return 'パスタ';
+                case 'fish-dishes': return '魚料理';
+                case 'meat-dishes': return '肉料理';
+                case 'drink': return 'ドリンク';
+                case 'courses': return 'コース';
+                case 'cafe-dessert': return 'カフェ・デザート';
+                default: return '';
+            }
+        }
+
+        // 料理詳細モーダルを開く関数
+        function openDishDetailModal(item) {
+            console.log('Opening dish detail modal for:', item.name);
+            detailDishImage.src = item.imageUrl;
+            detailDishImage.alt = item.name + 'の画像';
+            detailDishName.textContent = item.name;
+            
+            // 価格表示のHTMLを生成（モーダル用）
+            const detailPriceHtml = item.prices.map(p => {
+                if (p.type) {
+                    return `${p.type} ${p.value}`;
+                } else {
+                    return `${p.value}`;
+                }
+            }).join('<br>');
+            detailDishPrice.innerHTML = detailPriceHtml;
+
+            // fullDescriptionがあればそれを優先し、なければdescriptionを表示
+            detailDishDescription.innerHTML = item.fullDescription || item.description || '説明がありません。'; 
+            
+            // おすすめペアリングの表示と理由
+            if (item.recommendedPairing) {
+                recommendedPairingText.textContent = item.recommendedPairing;
+                if (item.recommendedPairingReason) {
+                    recommendedPairingReason.textContent = item.recommendedPairingReason;
+                    recommendedPairingReason.style.display = 'block'; // 理由があれば表示
+                } else {
+                    recommendedPairingReason.style.display = 'none'; // 理由がなければ非表示
+                }
+                recommendedPairingSection.style.display = 'block'; // ペアリングセクションを表示
+            } else {
+                recommendedPairingSection.style.display = 'none'; // ペアリングがなければセクション全体を非表示
+            }
+
+            dishDetailModal.classList.add('visible');
+            console.log('Dish detail modal opened.');
+        }
+
+        // 料理詳細モーダルを閉じる関数
+        function closeDishDetailModal() {
+            console.log('Closing dish detail modal.');
+            dishDetailModal.classList.remove('visible');
+        }
+
+        // ボタンクリックイベントリスナーを設定
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                console.log('Category button clicked:', button.dataset.category);
+                // 全てのボタンからactiveクラスを削除
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                // クリックされたボタンにactiveクラスを追加
+                button.classList.add('active');
+
+                const category = button.dataset.category;
+                displayMenu(category);
+            });
+        });
+
+        // ページ読み込み時に最初のカテゴリを表示
+        window.onload = () => {
+            console.log('Window loaded. Initializing menu display.');
+            const loadingMessage = document.getElementById('loadingMessage');
+            if (loadingMessage) {
+                loadingMessage.style.display = 'none'; // Hide loading message once JS starts
+            }
+            displayMenu('hors-doeuvres'); // 初期表示をオードブルに変更
+            console.log('Initial menu category "hors-doeuvres" displayed.');
+        };
+    </script>
+</body>
+</html>
