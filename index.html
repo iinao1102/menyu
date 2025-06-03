@@ -311,24 +311,36 @@
 
         .detail-modal-content {
             background-color: #fff; /* モーダルの背景色も白に */
-            padding: 40px; /* パディング */
+            padding: 20px; /* パディングを調整 */
             border-radius: 12px; /* 角丸 */
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* 影 */
             text-align: center;
             max-width: 600px; /* モーダルの最大幅 */
             width: 90%;
-            position: relative;
+            position: relative; /* 子要素の絶対位置指定の基準 */
             transform: translateY(20px); /* 最初は少し下に配置 */
             transition: transform 0.3s ease-in-out;
             
-            /* ここにスクロール機能を追加 */
+            display: flex; /* flexboxで内部要素を配置 */
+            flex-direction: column; /* 縦方向に並べる */
             max-height: 80vh; /* ビューポートの高さの80%を最大高さとする */
-            overflow-y: auto; /* 縦方向にスクロールを可能にする */
-            -webkit-overflow-scrolling: touch; /* iOSでのスムーズなスクロール */
+            box-sizing: border-box; /* パディングを幅と高さに含める */
         }
 
         .detail-modal-overlay.visible .detail-modal-content {
             transform: translateY(0); /* 表示時に元の位置へ */
+        }
+
+        /* モーダル内のスクロール可能な領域 */
+        .modal-scroll-area {
+            flex-grow: 1; /* 残りのスペースを埋める */
+            overflow-y: auto; /* 縦方向にスクロールを可能にする */
+            -webkit-overflow-scrolling: touch; /* iOSでのスムーズなスクロール */
+            scroll-behavior: smooth; /* スムーズなスクロールアニメーション */
+            padding-top: 20px; /* 閉じるボタンとの間にスペース */
+            padding-right: 15px; /* スクロールバー分のスペースを確保 */
+            padding-bottom: 20px; /* 下部にもパディング */
+            box-sizing: border-box;
         }
 
         .detail-modal-image {
@@ -367,14 +379,14 @@
             font-size: 1.1em; /* 大きさ */
             line-height: 1.8;
             text-align: justify;
-            margin-bottom: 30px; /* マージン */
+            margin-bottom: 15px; /* マージンを調整 */
         }
         
         .detail-modal-content ul {
             list-style-type: none; /* リストのマーカーを削除 */
             padding-left: 0; /* 左パディングを削除 */
             text-align: left; /* 左寄せ */
-            margin-bottom: 20px;
+            margin-bottom: 15px; /* マージンを調整 */
         }
 
         .detail-modal-content ul li {
@@ -385,7 +397,7 @@
         }
 
         .detail-modal-close-button {
-            position: absolute;
+            position: absolute; /* モーダルコンテンツに対して絶対位置 */
             top: 15px; /* 位置 */
             right: 20px; /* 位置 */
             background: none;
@@ -398,6 +410,7 @@
             border-radius: 50%; /* 丸い形に */
             background-color: rgba(255, 255, 255, 0.7); /* 半透明の背景で視認性向上 */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 影を追加 */
+            z-index: 1001; /* 他のコンテンツの上に表示 */
         }
 
         .detail-modal-close-button:hover {
@@ -494,8 +507,14 @@
             }
 
             .detail-modal-content {
-                padding: 25px; /* モーダルのパディングを調整 */
+                padding: 20px; /* モーダルのパディングを調整 */
                 max-height: 85vh; /* タブレット向けに少し高く */
+            }
+
+            .modal-scroll-area {
+                padding-top: 15px; /* 閉じるボタンとの間隔を調整 */
+                padding-right: 10px; /* スクロールバー分のスペースを調整 */
+                padding-bottom: 15px; /* 下部パディングを調整 */
             }
 
             .detail-modal-image {
@@ -590,8 +609,14 @@
             }
 
             .detail-modal-content {
-                padding: 20px;
+                padding: 15px; /* モーダルのパディングをさらに調整 */
                 max-height: 90vh; /* スマートフォン向けにさらに高く */
+            }
+
+            .modal-scroll-area {
+                padding-top: 10px; /* 閉じるボタンとの間隔を調整 */
+                padding-right: 8px; /* スクロールバー分のスペースを調整 */
+                padding-bottom: 10px; /* 下部パディングを調整 */
             }
 
             .detail-modal-image {
@@ -726,20 +751,24 @@
     <!-- 料理詳細表示用モーダル -->
     <div id="dishDetailModal" class="detail-modal-overlay">
         <div class="detail-modal-content">
+            <!-- Close button is now *inside* detail-modal-content but *above* the scrollable area -->
             <button class="detail-modal-close-button" onclick="closeDishDetailModal()" aria-label="閉じる">&times;</button>
-            <div class="detail-modal-image">
-                <img id="detailDishImage" src="" alt="料理の画像">
-            </div>
-            <h3 id="detailDishName"></h3>
-            <p class="detail-price" id="detailDishPrice"></p>
-            <!-- ここでinnerHTMLを使用するように変更 -->
-            <div id="detailDishDescription"></div>
+            
+            <!-- This div will be the scrollable content area -->
+            <div class="modal-scroll-area">
+                <div class="detail-modal-image">
+                    <img id="detailDishImage" src="" alt="料理の画像">
+                </div>
+                <h3 id="detailDishName"></h3>
+                <p class="detail-price" id="detailDishPrice"></p>
+                <div id="detailDishDescription"></div>
 
-            <!-- おすすめペアリングセクション -->
-            <div id="recommendedPairingSection" class="recommended-pairing">
-                <strong>おすすめのペアリングワイン:</strong>
-                <span id="recommendedPairingText"></span>
-                <p id="recommendedPairingReason" class="pairing-reason"></p> <!-- ペアリング理由を追加 -->
+                <!-- おすすめペアリングセクション -->
+                <div id="recommendedPairingSection" class="recommended-pairing">
+                    <strong>おすすめのペアリングワイン:</strong>
+                    <span id="recommendedPairingText"></span>
+                    <p id="recommendedPairingReason" class="pairing-reason"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -1527,6 +1556,11 @@
             }
 
             dishDetailModal.classList.add('visible');
+            // モーダルを開いた後、スクロール位置を一番上に戻す
+            const modalScrollArea = dishDetailModal.querySelector('.modal-scroll-area');
+            if (modalScrollArea) {
+                modalScrollArea.scrollTop = 0;
+            }
             console.log('料理詳細モーダルが開かれました。');
         }
 
