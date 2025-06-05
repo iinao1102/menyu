@@ -325,6 +325,7 @@
             flex-direction: column; /* 縦方向に並べる */
             max-height: 80vh; /* ビューポートの高さの80%を最大高さとする */
             box-sizing: border-box; /* パディングを幅と高さに含める */
+            outline: none; /* フォーカス時のアウトラインをリセット */
         }
 
         .detail-modal-overlay.visible .detail-modal-content {
@@ -440,6 +441,38 @@
             font-size: 0.9em;
             color: #666;
             margin-top: 5px;
+        }
+
+        /* ローディングスピナーのスタイル */
+        .spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #6A0D0D; /* Deep maroon */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto; /* Centered with margin */
+            display: none; /* Initially hidden */
+        }
+
+        .spinner.active {
+            display: block; /* Show when active */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* メニューデータがない場合のメッセージ */
+        .no-menu-message {
+            text-align: center;
+            color: #888;
+            font-size: 1.1em;
+            margin-top: 50px;
+            padding: 20px;
+            border: 1px dashed #ddd;
+            border-radius: 8px;
         }
 
         /* レスポンシブデザイン */
@@ -643,7 +676,7 @@
         <h2 class="menu-title">メニュー</h2>
 
         <div class="category-buttons">
-            <button class="category-button active" data-category="hors-doeuvres">
+            <button class="category-button" data-category="hors-doeuvres">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <circle cx="12" cy="12" r="10" fill="#E53935"/> <circle cx="12" cy="12" r="6" fill="#FFFFFF"/> <path d="M12 2c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#388E3C"/> <path d="M16 10c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#388E3C"/> <path d="M8 10c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#388E3C"/>
                 </svg>
@@ -735,12 +768,13 @@
             </button>
         </div>
 
-        <div id="menuContent">
+        <div id="menuContent" aria-live="polite"> <!-- ARIA Live Regionを追加 -->
             <!-- JavaScriptが有効でない場合、またはメニューのロード中に表示されるメッセージ -->
             <noscript>
                 <p style="text-align: center; color: #8B0000; font-weight: bold;">JavaScriptを有効にしてください。メニューを表示できません。</p>
             </noscript>
-            <p id="loadingMessage" style="text-align: center; color: #777; font-style: italic;">メニューを読み込み中...</p>
+            <!-- ローディングスピナー -->
+            <div id="loadingSpinner" class="spinner active"></div>
         </div>
 
         <div class="footer">
@@ -749,15 +783,16 @@
     </div>
 
     <!-- 料理詳細表示用モーダル -->
-    <div id="dishDetailModal" class="detail-modal-overlay">
-        <div class="detail-modal-content">
+    <div id="dishDetailModal" class="detail-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="detailDishName">
+        <div class="detail-modal-content" tabindex="-1"> <!-- モーダルコンテンツにフォーカス可能にする -->
             <!-- Close button is now *inside* detail-modal-content but *above* the scrollable area -->
             <button class="detail-modal-close-button" onclick="closeDishDetailModal()" aria-label="閉じる">&times;</button>
             
             <!-- This div will be the scrollable content area -->
             <div class="modal-scroll-area">
                 <div class="detail-modal-image">
-                    <img id="detailDishImage" src="" alt="料理の画像">
+                    <!-- 実際の画像を使用する際は、<picture>タグでWebPなどの最適化された形式を検討してください。 -->
+                    <img id="detailDishImage" src="" alt="料理の画像" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/250x150/CCCCCC/666666?text=Image+Not+Found';">
                 </div>
                 <h3 id="detailDishName"></h3>
                 <p class="detail-price" id="detailDishPrice"></p>
@@ -773,9 +808,26 @@
         </div>
     </div>
 
-    <script>
+    <script defer>
         // スクリプトが読み込まれたことを示す最初のログ
         console.log("JavaScriptの実行が開始されました。");
+
+        // Service Workerの登録
+        // この環境（blob:プロトコル）ではService Workerは登録できません。
+        // 実際のウェブサーバー（http:またはhttps:）にデプロイする際に、以下のコメントを解除してください。
+        /*
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker 登録成功:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker 登録失敗:', error);
+                    });
+            });
+        }
+        */
 
         // メニューデータ
         const menuData = {
@@ -1401,6 +1453,7 @@
         const categoryButtons = document.querySelectorAll('.category-button');
         const menuContentDiv = document.getElementById('menuContent');
         const dishDetailModal = document.getElementById('dishDetailModal');
+        const detailModalContent = dishDetailModal.querySelector('.detail-modal-content');
         const detailDishImage = document.getElementById('detailDishImage');
         const detailDishName = document.getElementById('detailDishName');
         const detailDishPrice = document.getElementById('detailDishPrice');
@@ -1408,103 +1461,132 @@
         const recommendedPairingSection = document.getElementById('recommendedPairingSection'); // 新しいペアリング表示要素
         const recommendedPairingText = document.getElementById('recommendedPairingText'); // 新しいペアリングテキスト要素
         const recommendedPairingReason = document.getElementById('recommendedPairingReason'); // 新しいペアリング理由要素
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        let lastFocusedElement = null; // モーダルを開く前にフォーカスされていた要素を保存
+
+        // 料理詳細モーダル内のフォーカス可能な要素を取得するヘルパー関数
+        function getFocusableElements(container) {
+            return Array.from(
+                container.querySelectorAll(
+                    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                )
+            ).filter(el => el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement);
+        }
 
         // メニューを表示する関数
         function displayMenu(category) {
             console.log(`メニューカテゴリの表示を試行中: ${category}`);
 
-            // 現在表示されているメニューを非表示にする
-            const currentMenu = menuContentDiv.querySelector('.menu-section.active');
-            if (currentMenu) {
-                currentMenu.classList.remove('active');
-            }
+            // ローディングスピナーを表示
+            loadingSpinner.classList.add('active');
+            menuContentDiv.style.minHeight = '200px'; // コンテンツが空の時にスピナーが中央に来るように
 
-            // 新しいメニューセクションを生成または取得
-            let targetSection = document.getElementById(`menu-${category}`);
-            if (!targetSection) {
-                targetSection = document.createElement('div');
-                targetSection.id = `menu-${category}`;
-                targetSection.classList.add('menu-section');
-                menuContentDiv.appendChild(targetSection);
-            }
+            // 少し遅延させて、スピナーの表示をユーザーに感じさせる
+            setTimeout(() => {
+                // 現在表示されているメニューを非表示にする
+                const currentMenu = menuContentDiv.querySelector('.menu-section.active');
+                if (currentMenu) {
+                    currentMenu.classList.remove('active');
+                }
 
-            // メニューセクションの内容をクリアして再構築
-            targetSection.innerHTML = `<h3>${getCategoryTitle(category)}</h3>`;
-            const items = menuData[category];
-            if (items) {
-                items.forEach(item => {
-                    let priceHtml;
-                    let pricesForModal;
+                // 新しいメニューセクションを生成または取得
+                let targetSection = document.getElementById(`menu-${category}`);
+                if (!targetSection) {
+                    targetSection = document.createElement('div');
+                    targetSection.id = `menu-${category}`;
+                    targetSection.classList.add('menu-section');
+                    menuContentDiv.appendChild(targetSection);
+                }
 
-                    // item.prices が配列として存在するかどうかをチェック
-                    if (item.prices && Array.isArray(item.prices)) {
-                        // 新しい形式 (prices配列)
-                        priceHtml = item.prices.map(p => {
-                            if (p.type) {
-                                return `<span>${p.type} ${p.value}</span>`;
-                            } else {
-                                return `<span>${p.value}</span>`;
-                            }
-                        }).join('<br>');
-                        pricesForModal = item.prices; // 配列をそのまま渡す
-                    } else {
-                        // 従来の形式 (price文字列)
-                        priceHtml = `<span>${item.price}</span>`;
-                        // モーダル用に配列形式に変換して渡す
-                        pricesForModal = [{ type: "", value: item.price }];
-                    }
+                // メニューセクションの内容をクリアして再構築
+                targetSection.innerHTML = `<h3>${getCategoryTitle(category)}</h3>`;
+                const items = menuData[category];
+                if (items && items.length > 0) {
+                    items.forEach(item => {
+                        let priceHtml;
+                        let pricesForModal;
 
-                    const menuItemHtml = `
-                        <div class="menu-item" 
-                             data-name="${item.name}" 
-                             data-description="${item.description || ''}" 
-                             data-price-json='${JSON.stringify(pricesForModal)}' 
-                             data-image-url="${item.imageUrl}"
-                             data-full-description="${encodeURIComponent(item.fullDescription || '')}"
-                             data-recommended-pairing="${encodeURIComponent(item.recommendedPairing || '')}"
-                             data-recommended-pairing-reason="${encodeURIComponent(item.recommendedPairingReason || '')}"> <!-- recommendedPairingReasonを追加 -->
-                            <div class="menu-item-image">
-                                <img src="${item.imageUrl}" alt="${item.name}の画像" onerror="this.onerror=null;this.src='https://placehold.co/250x150/CCCCCC/666666?text=Image+Not+Found';">
+                        // item.prices が配列として存在するかどうかをチェック
+                        if (item.prices && Array.isArray(item.prices)) {
+                            // 新しい形式 (prices配列)
+                            priceHtml = item.prices.map(p => {
+                                if (p.type) {
+                                    return `<span>${p.type} ${p.value}</span>`;
+                                } else {
+                                    return `<span>${p.value}</span>`;
+                                }
+                            }).join('<br>');
+                            pricesForModal = item.prices; // 配列をそのまま渡す
+                        } else {
+                            // 従来の形式 (price文字列)
+                            priceHtml = `<span>${item.price}</span>`;
+                            // モーダル用に配列形式に変換して渡す
+                            pricesForModal = [{ type: "", value: item.price }];
+                        }
+
+                        const menuItemHtml = `
+                            <div class="menu-item" 
+                                 data-name="${item.name}" 
+                                 data-description="${item.description || ''}" 
+                                 data-price-json='${JSON.stringify(pricesForModal)}' 
+                                 data-image-url="${item.imageUrl}"
+                                 data-full-description="${encodeURIComponent(item.fullDescription || '')}"
+                                 data-recommended-pairing="${encodeURIComponent(item.recommendedPairing || '')}"
+                                 data-recommended-pairing-reason="${encodeURIComponent(item.recommendedPairingReason || '')}"> <!-- recommendedPairingReasonを追加 -->
+                                <div class="menu-item-image">
+                                    <img src="${item.imageUrl}" alt="${item.name}の画像" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/250x150/CCCCCC/666666?text=Image+Not+Found';">
+                                </div>
+                                <div class="menu-item-content">
+                                    <h4>
+                                        <span class="dish-name">${item.name}</span> 
+                                        <span class="price">${priceHtml}</span>
+                                    </h4>
+                                    <p>${item.description || ''}</p>
+                                    <span class="tap-indicator">
+                                        タップで詳細を見る
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                        </svg>
+                                    </span>
+                                </div>
                             </div>
-                            <div class="menu-item-content">
-                                <h4>
-                                    <span class="dish-name">${item.name}</span> 
-                                    <span class="price">${priceHtml}</span>
-                                </h4>
-                                <p>${item.description || ''}</p>
-                                <span class="tap-indicator">
-                                    タップで詳細を見る
-                                    <svg viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                                    </svg>
-                                </span>
-                            </div>
-                        </div>
-                    `;
-                    targetSection.insertAdjacentHTML('beforeend', menuItemHtml);
-                });
-
-                // 各メニュー項目にクリックイベントリスナーを設定
-                targetSection.querySelectorAll('.menu-item').forEach(itemElement => {
-                    itemElement.addEventListener('click', (event) => {
-                        // イベントの伝播を停止し、親要素のクリックを防止
-                        event.stopPropagation(); 
-                        const name = itemElement.dataset.name;
-                        const description = itemElement.dataset.description;
-                        const fullDescription = decodeURIComponent(itemElement.dataset.fullDescription || '');
-                        const prices = JSON.parse(itemElement.dataset.priceJson);
-                        const imageUrl = itemElement.dataset.imageUrl;
-                        const recommendedPairing = decodeURIComponent(itemElement.dataset.recommendedPairing || ''); // recommendedPairingを取得
-                        const recommendedPairingReasonData = decodeURIComponent(itemElement.dataset.recommendedPairingReason || ''); // recommendedPairingReasonを取得
-                        openDishDetailModal({ name, description, prices, imageUrl, fullDescription, recommendedPairing, recommendedPairingReason: recommendedPairingReasonData }); // recommendedPairingReasonを渡す
+                        `;
+                        targetSection.insertAdjacentHTML('beforeend', menuItemHtml);
                     });
-                });
-            }
-            console.log(`カテゴリ ${category} のメニューデータが処理されました。`);
 
-            // 新しいメニューセクションを表示
-            targetSection.classList.add('active');
-            console.log(`カテゴリ ${category} のメニューが正常に表示されました。`);
+                    // 各メニュー項目にクリックイベントリスナーを設定
+                    targetSection.querySelectorAll('.menu-item').forEach(itemElement => {
+                        itemElement.addEventListener('click', (event) => {
+                            // イベントの伝播を停止し、親要素のクリックを防止
+                            event.stopPropagation(); 
+                            // モーダルを開く前に、現在フォーカスされている要素を保存
+                            lastFocusedElement = document.activeElement; 
+
+                            const name = itemElement.dataset.name;
+                            const description = itemElement.dataset.description;
+                            const fullDescription = decodeURIComponent(itemElement.dataset.fullDescription || '');
+                            const prices = JSON.parse(itemElement.dataset.priceJson);
+                            const imageUrl = itemElement.dataset.imageUrl;
+                            const recommendedPairing = decodeURIComponent(itemElement.dataset.recommendedPairing || ''); // recommendedPairingを取得
+                            const recommendedPairingReasonData = decodeURIComponent(itemElement.dataset.recommendedPairingReason || ''); // recommendedPairingReasonを取得
+                            openDishDetailModal({ name, description, prices, imageUrl, fullDescription, recommendedPairing, recommendedPairingReason: recommendedPairingReasonData }); // recommendedPairingReasonを渡す
+                        });
+                    });
+                } else {
+                    // メニューデータがない場合のメッセージを表示
+                    targetSection.innerHTML += `<p class="no-menu-message">現在、このカテゴリのメニューはありません。</p>`;
+                }
+                console.log(`カテゴリ ${category} のメニューデータが処理されました。`);
+
+                // 新しいメニューセクションを表示
+                targetSection.classList.add('active');
+                console.log(`カテゴリ ${category} のメニューが正常に表示されました。`);
+
+                // ローディングスピナーを非表示
+                loadingSpinner.classList.remove('active');
+                menuContentDiv.style.minHeight = ''; // min-heightをリセット
+            }, 300); // 300ミリ秒の遅延
         }
 
         // カテゴリ名から表示用のタイトルを取得するヘルパー関数
@@ -1561,6 +1643,10 @@
             if (modalScrollArea) {
                 modalScrollArea.scrollTop = 0;
             }
+
+            // モーダルが開いたら、モーダルコンテンツにフォーカスを移動
+            detailModalContent.focus();
+
             console.log('料理詳細モーダルが開かれました。');
         }
 
@@ -1568,7 +1654,45 @@
         function closeDishDetailModal() {
             console.log('料理詳細モーダルを閉じています。');
             dishDetailModal.classList.remove('visible');
+            // モーダルを閉じた後、元のフォーカス要素に戻す
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+                lastFocusedElement = null; // リセット
+            }
         }
+
+        // モーダルオーバーレイ（暗い背景部分）をクリックして閉じる機能
+        dishDetailModal.addEventListener('click', (event) => {
+            if (event.target === dishDetailModal) { // オーバーレイ自体がクリックされた場合
+                closeDishDetailModal();
+            }
+        });
+
+        // モーダル内のキーボード操作によるフォーカストラップ
+        detailModalContent.addEventListener('keydown', function(e) {
+            const focusableElements = getFocusableElements(detailModalContent);
+            if (focusableElements.length === 0) return;
+
+            const firstFocusableEl = focusableElements[0];
+            const lastFocusableEl = focusableElements[focusableElements.length - 1];
+
+            if (e.key === 'Tab') {
+                if (e.shiftKey) { // Shift + Tab
+                    if (document.activeElement === firstFocusableEl) {
+                        lastFocusableEl.focus();
+                        e.preventDefault();
+                    }
+                } else { // Tab
+                    if (document.activeElement === lastFocusableEl) {
+                        firstFocusableEl.focus();
+                        e.preventDefault();
+                    }
+                }
+            } else if (e.key === 'Escape') { // Escキーでモーダルを閉じる
+                closeDishDetailModal();
+            }
+        });
+
 
         // ボタンクリックイベントリスナーを設定
         categoryButtons.forEach(button => {
@@ -1581,18 +1705,33 @@
 
                 const category = button.dataset.category;
                 displayMenu(category);
+
+                // URLハッシュを更新 (ディープリンク対応)
+                history.pushState(null, '', `#${category}`);
             });
         });
 
-        // ページ読み込み時に最初のカテゴリを表示
+        // ページ読み込み時の初期表示とURLハッシュの処理
         window.onload = () => {
             console.log('ウィンドウがロードされました。メニュー表示を初期化しています。');
-            const loadingMessage = document.getElementById('loadingMessage');
-            if (loadingMessage) {
-                loadingMessage.style.display = 'none'; // Hide loading message once JS starts
+            const initialCategory = window.location.hash.substring(1); // #を取り除く
+
+            // ハッシュが有効なカテゴリ名と一致するかチェック
+            if (initialCategory && menuData.hasOwnProperty(initialCategory)) {
+                // 該当カテゴリボタンをアクティブにする
+                const activeCategoryButton = document.querySelector(`.category-button[data-category="${initialCategory}"]`);
+                if (activeCategoryButton) {
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    activeCategoryButton.classList.add('active');
+                }
+                displayMenu(initialCategory);
+                console.log(`URLハッシュに基づいてカテゴリ「${initialCategory}」が表示されました。`);
+            } else {
+                // 有効なハッシュがない場合はデフォルトカテゴリを表示
+                document.querySelector('.category-button[data-category="hors-doeuvres"]').classList.add('active');
+                displayMenu('hors-doeuvres'); // 初期表示をオードブルに変更
+                console.log('最初のメニューカテゴリ「オードブル」が表示されました。');
             }
-            displayMenu('hors-doeuvres'); // 初期表示をオードブルに変更
-            console.log('最初のメニューカテゴリ「オードブル」が表示されました。');
         };
     </script>
 </body>
